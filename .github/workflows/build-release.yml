@@ -1,0 +1,52 @@
+name: Bundle for tag
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Bundle
+    runs-on: windows-2022 # For a list of available runner types, refer to
+                          # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Add package version
+        run: |
+          echo "PackageVersion = $GITHUB_REF_NAME" >> PinJuke/DistributionInfo.ini
+      - name: Get app
+        uses: robinraju/release-downloader@v1.8
+        with:
+          repository: "PinJuke/PinJuke"
+          tag: '1.0.0-alpha.21'
+          extract: true
+      - name: Get media
+        uses: robinraju/release-downloader@v1.8
+        with:
+          repository: "PinJuke/PinJuke-Media"
+          tag: '1.1.0'
+          extract: true
+      - name: Get milkdrop
+        uses: robinraju/release-downloader@v1.8
+        with:
+          repository: "PinJuke/PinJuke-Milkdrop"
+          tag: '1.0.0'
+          extract: true
+      - name: Create zip archive
+        # https://github.com/marketplace/actions/zip-release
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: zip
+          # e.g. PinJuke_Vpu_1.0.0-alpha.1.zip
+          filename: PinJuke_Vpu_${{ github.ref_name }}.zip
+          directory: .
+          path: PinJuke
+      - name: Upload release
+        # https://github.com/ncipollo/release-action
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: PinJuke_Vpu_${{ github.ref_name }}.zip
