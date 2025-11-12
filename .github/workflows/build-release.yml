@@ -22,13 +22,13 @@ jobs:
         uses: robinraju/release-downloader@v1.8
         with:
           repository: "PinJuke/PinJuke"
-          tag: '1.0.0-alpha.21'
+          tag: '1.0.0-alpha.22'
           extract: true
       - name: Get media
         uses: robinraju/release-downloader@v1.8
         with:
           repository: "PinJuke/PinJuke-Media"
-          tag: '1.1.0'
+          tag: '1.2.0'
           extract: true
       - name: Get milkdrop
         uses: robinraju/release-downloader@v1.8
